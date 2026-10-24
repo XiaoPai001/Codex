@@ -1,0 +1,7 @@
+# Keep shebangs and Codex parsers happy on every platform.
+*.py    text eol=lf
+*.ps1   text eol=crlf
+*.md    text eol=lf
+*.json  text eol=lf
+*.yaml  text eol=lf
+*.gitattributes text eol=lf
