@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · 逆向分析笔记整理"
+  short_description: "总结本地逆向分析笔记、整理数据结构并生成可追溯的交接摘要"
+  default_prompt: "使用 $xp-re-notes 整理指定目录中的逆向分析 MD，保留证据来源、不确定项和版本信息，另存结果，不覆盖原始文件。"

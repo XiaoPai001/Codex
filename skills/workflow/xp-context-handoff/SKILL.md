@@ -1,5 +1,5 @@
 ---
-name: context-handoff
+name: xp-context-handoff
 description: "在切换模型、新开聊天或上下文压缩前，将当前任务的背景、约束、关键决定、进展和下一步计划保存为 Markdown 交接文档；也可读取指定交接文档恢复任务。适用于跨模型或跨会话接续工作，不用于一般会议纪要或本地逆向笔记批量整理。"
 ---
 
@@ -66,8 +66,8 @@ description: "在切换模型、新开聊天或上下文压缩前，将当前任
 ## 保存位置与保护
 
 - 用户明确指定目录或文件时优先采用，但服从当前环境有效的输出目录限制。若限制导致不能写入请求位置，说明实际保存位置，不虚报已写入指定目录。
-- 未指定位置时遵循当前工作区的交付约定（例如 `outputs/context-handoff/`）；无专门约定则使用工作区 `context-handoff/`。只有确实无法确定可写位置时才询问，不因可合理默认的目录停工。
-- 默认文件名为 `context-handoff-<任务短名>-YYYYMMDD-HHMMSS.md`；使用用户时区，清理短名中的非法路径字符。重名加序号，保留用户指定的扩展名为 `.md`。
+- 未指定位置时遵循当前工作区的交付约定（例如 `outputs/xp-context-handoff/`）；无专门约定则使用工作区 `xp-context-handoff/`。只有确实无法确定可写位置时才询问，不因可合理默认的目录停工。
+- 默认文件名为 `xp-context-handoff-<任务短名>-YYYYMMDD-HHMMSS.md`；使用用户时区，清理短名中的非法路径字符。重名加序号，保留用户指定的扩展名为 `.md`。
 - 使用排他创建（例如 Python `open(path, 'x', encoding='utf-8')`），不覆盖、追加或改写任何原文件或既有交接文档，即使用户请求路径已存在，也新建版本并说明。
 - 内容和路径使用 UTF-8；不得把文件写入技能安装目录。只创建本次报告及必要输出目录，不修改项目配置、代码或用户记忆设置。
 - 不复制密钥、令牌、密码或完整敏感日志。记录环境变量名、配置文件位置或凭据需求即可，不为摘要读取凭据文件。
@@ -83,7 +83,7 @@ description: "在切换模型、新开聊天或上下文压缩前，将当前任
 ## 调用示例
 
 ```text
-$context-handoff 我要切换模型，把当前背景、完成情况和下一步计划保存到指定的交接目录。
-$context-handoff 保存当前任务，特别保留未提交修改、测试结果和待确认问题。
-$context-handoff 读取 D:/project/handoff/context-handoff-task.md，核对现状后继续下一步。
+$xp-context-handoff 我要切换模型，把当前背景、完成情况和下一步计划保存到指定的交接目录。
+$xp-context-handoff 保存当前任务，特别保留未提交修改、测试结果和待确认问题。
+$xp-context-handoff 读取 D:/project/handoff/xp-context-handoff-task.md，核对现状后继续下一步。
 ```

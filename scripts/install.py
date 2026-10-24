@@ -13,9 +13,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 # 仓库按用途分类，安装后仍使用技能的英文标识作为目录名。
 SOURCES = {
-    "review-flow": REPO_ROOT / "skills" / "development" / "review-flow",
-    "re-notes": REPO_ROOT / "skills" / "reverse-engineering" / "re-notes",
-    "context-handoff": REPO_ROOT / "skills" / "workflow" / "context-handoff",
+    "xp-review-flow": REPO_ROOT / "skills" / "development" / "xp-review-flow",
+    "xp-re-notes": REPO_ROOT / "skills" / "reverse-engineering" / "xp-re-notes",
+    "xp-context-handoff": REPO_ROOT / "skills" / "workflow" / "xp-context-handoff",
 }
 
 
@@ -23,9 +23,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="安装本仓库的 Codex 技能：独立代码审阅、逆向分析笔记整理或上下文交接。"
     )
-    parser.add_argument("--skill", choices=SOURCES, default="review-flow", help="技能标识（默认：review-flow 独立代码审阅）")
-    parser.add_argument("--model", help="审阅模型 ID，仅用于 review-flow")
-    parser.add_argument("--effort", help="审阅推理强度，例如 xhigh（极高），仅用于 review-flow")
+    parser.add_argument("--skill", choices=SOURCES, default="xp-review-flow", help="技能标识（默认：xp-review-flow 独立代码审阅）")
+    parser.add_argument("--model", help="审阅模型 ID，仅用于 xp-review-flow")
+    parser.add_argument("--effort", help="审阅推理强度，例如 xhigh（极高），仅用于 xp-review-flow")
     parser.add_argument(
         "--dest",
         type=Path,
@@ -47,11 +47,11 @@ def install(args: argparse.Namespace) -> None:
 
     config_path = SOURCE / "references" / "config.json"
     config = None
-    if args.skill == "review-flow":
+    if args.skill == "xp-review-flow":
         with config_path.open(encoding="utf-8") as handle:
             config = json.load(handle)
     elif args.model or args.effort:
-        raise RuntimeError("--model and --effort apply only to review-flow")
+        raise RuntimeError("--model and --effort apply only to xp-review-flow")
 
     if args.model:
         config["reviewer_model"] = args.model

@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
-安装独立代码审阅（review-flow）、逆向分析笔记整理（re-notes）或上下文交接（context-handoff）技能。
+安装独立代码审阅（xp-review-flow）、逆向分析笔记整理（xp-re-notes）或上下文交接（xp-context-handoff）技能。
 .PARAMETER Skill
-技能标识；默认 review-flow。仓库分类不影响本地安装目录名。
+技能标识；默认 xp-review-flow。仓库分类不影响本地安装目录名。
 .PARAMETER Model
-审阅模型 ID，仅用于 review-flow。
+审阅模型 ID，仅用于 xp-review-flow。
 .PARAMETER Effort
-审阅推理强度，例如 xhigh（极高），仅用于 review-flow。
+审阅推理强度，例如 xhigh（极高），仅用于 xp-review-flow。
 .PARAMETER Destination
 安装目录，末级目录名必须等于技能标识。
 .PARAMETER Force
@@ -14,8 +14,8 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('review-flow', 're-notes', 'context-handoff')]
-    [string]$Skill = 'review-flow',
+    [ValidateSet('xp-review-flow', 'xp-re-notes', 'xp-context-handoff')]
+    [string]$Skill = 'xp-review-flow',
     [string]$Model,
     [string]$Effort,
     [string]$Destination,
@@ -27,9 +27,9 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 # 开发类 / 逆向分析类 / 工作流类：分类路径不影响本地安装目录名。
 $categories = @{
-    'review-flow' = 'development'
-    're-notes' = 'reverse-engineering'
-    'context-handoff' = 'workflow'
+    'xp-review-flow' = 'development'
+    'xp-re-notes' = 'reverse-engineering'
+    'xp-context-handoff' = 'workflow'
 }
 $category = $categories[$Skill]
 $source = Join-Path $repoRoot "skills\$category\$Skill"
@@ -40,10 +40,10 @@ if (-not (Test-Path -LiteralPath (Join-Path $source "SKILL.md") -PathType Leaf))
 }
 
 $config = $null
-if ($Skill -eq 'review-flow') {
+if ($Skill -eq 'xp-review-flow') {
     $config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
 } elseif ($Model -or $Effort) {
-    throw '-Model and -Effort apply only to review-flow'
+    throw '-Model and -Effort apply only to xp-review-flow'
 }
 if ($Model) { $config.reviewer_model = $Model }
 if ($Effort) { $config.reviewer_reasoning_effort = $Effort }
