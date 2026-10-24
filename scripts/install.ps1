@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-安装独立代码审阅（xp-review-flow）、逆向分析笔记整理（xp-re-notes）或上下文交接（xp-context-handoff）技能。
+安装本仓库的 XP 技能：代码审阅、逆向分析、笔记整理与上下文交接。
 .PARAMETER Skill
 技能标识；默认 xp-review-flow。仓库分类不影响本地安装目录名。
 .PARAMETER Model
@@ -14,7 +14,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('xp-review-flow', 'xp-re-notes', 'xp-context-handoff')]
+    [ValidateSet('xp-review-flow', 'xp-re-notes', 'xp-context-handoff', 'xp-ida-struct', 'xp-debug-diff', 'xp-save-analysis')]
     [string]$Skill = 'xp-review-flow',
     [string]$Model,
     [string]$Effort,
@@ -30,6 +30,9 @@ $categories = @{
     'xp-review-flow' = 'development'
     'xp-re-notes' = 'reverse-engineering'
     'xp-context-handoff' = 'workflow'
+    'xp-ida-struct' = 'reverse-engineering'
+    'xp-debug-diff' = 'reverse-engineering'
+    'xp-save-analysis' = 'reverse-engineering'
 }
 $category = $categories[$Skill]
 $source = Join-Path $repoRoot "skills\$category\$Skill"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · 存档格式分析"
+  short_description: "对比本地游戏存档、定位候选字段并追踪读写证据，生成新的分析报告"
+  default_prompt: "使用 $xp-save-analysis 只读分析指定存档样本的格式和差异，保留来源及不确定项，另存报告，不覆盖原存档。"

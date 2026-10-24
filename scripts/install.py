@@ -16,12 +16,15 @@ SOURCES = {
     "xp-review-flow": REPO_ROOT / "skills" / "development" / "xp-review-flow",
     "xp-re-notes": REPO_ROOT / "skills" / "reverse-engineering" / "xp-re-notes",
     "xp-context-handoff": REPO_ROOT / "skills" / "workflow" / "xp-context-handoff",
+    "xp-ida-struct": REPO_ROOT / "skills" / "reverse-engineering" / "xp-ida-struct",
+    "xp-debug-diff": REPO_ROOT / "skills" / "reverse-engineering" / "xp-debug-diff",
+    "xp-save-analysis": REPO_ROOT / "skills" / "reverse-engineering" / "xp-save-analysis",
 }
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="安装本仓库的 Codex 技能：独立代码审阅、逆向分析笔记整理或上下文交接。"
+        description="安装本仓库的 XP 技能：代码审阅、逆向分析、笔记整理与上下文交接。"
     )
     parser.add_argument("--skill", choices=SOURCES, default="xp-review-flow", help="技能标识（默认：xp-review-flow 独立代码审阅）")
     parser.add_argument("--model", help="审阅模型 ID，仅用于 xp-review-flow")

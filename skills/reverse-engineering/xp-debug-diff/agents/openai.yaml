@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · 调试状态对比"
+  short_description: "通过现有 DHS 调试 MCP 采集指定范围快照，对比寄存器与内存变化"
+  default_prompt: "使用 $xp-debug-diff 对比指定的前后快照，保留读取失败、身份信息和不确定项，另存报告，不改目标内存或原文件。"

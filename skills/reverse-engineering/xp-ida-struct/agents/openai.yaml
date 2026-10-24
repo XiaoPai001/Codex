@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · IDA 结构恢复"
+  short_description: "通过现有 IDA MCP 恢复结构字段，保留地址证据、候选类型和待验证项"
+  default_prompt: "使用 $xp-ida-struct 只读分析指定函数的对象布局，保留每个字段的指令证据与未知项，另存报告，不改原始文件或 IDB。"
