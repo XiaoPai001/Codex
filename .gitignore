@@ -1,4 +1,5 @@
 .DS_Store
 Thumbs.db
 *.tmp
-.work/
+__pycache__/
+*.pyc

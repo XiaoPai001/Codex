@@ -117,6 +117,8 @@ Codex 自带的 `review-agent` 会在当前会话里直接审阅，使用的是�
 ```text
 .
 |-- README.md
+|-- .gitattributes
+|-- .gitignore
 |-- install.py
 |-- install.ps1
 `-- skill/
