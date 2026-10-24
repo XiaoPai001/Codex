@@ -8,6 +8,7 @@
 |---|---|---|
 | 开发 | [review-flow：独立代码审阅](skills/development/review-flow/SKILL.md) | 启动独立审阅子智能体，检查缺陷、回归风险和测试缺口，提供结论与整改方案 |
 | 逆向分析 | [re-notes：逆向分析笔记整理](skills/reverse-engineering/re-notes/SKILL.md) | 总结本地 MD、整理数据结构、生成交接摘要，保留来源与不确定项，另存结果 |
+| 工作流 | [context-handoff：上下文交接](skills/workflow/context-handoff/SKILL.md) | 切换模型或聊天前保存任务背景、决定、进展和下一步计划，读取交接文档接续工作 |
 
 ## 安装
 
@@ -16,11 +17,13 @@
 ```sh
 python scripts/install.py --skill review-flow
 python scripts/install.py --skill re-notes
+python scripts/install.py --skill context-handoff
 ```
 
 ```powershell
 ./scripts/install.ps1 -Skill review-flow
 ./scripts/install.ps1 -Skill re-notes
+./scripts/install.ps1 -Skill context-handoff
 ```
 
 不指定技能时默认安装 `review-flow`。默认安装位置是 `~/.agents/skills/<技能名>`，跨仓库使用。安装后在下一轮对话调用；若列表未刷新，可新开聊天。
@@ -41,6 +44,7 @@ python scripts/install.py --skill re-notes --dest .agents/skills/re-notes
 
 - `skills/development/review-flow`
 - `skills/reverse-engineering/re-notes`
+- `skills/workflow/context-handoff`
 
 ## 独立代码审阅
 
@@ -74,6 +78,24 @@ $re-notes 给 D:/analysis/game-notes 生成交接摘要，方便下次继续分�
 
 保留来源文件、行号或章节、游戏版本和地址基准；区分有验证记录、推测、待验证与冲突。不同版本和磁盘/内存布局分别整理，不自行补造字段。不覆盖原始笔记或已有报告，新报告遵循当前工作区的输出目录约定。此技能整理已有资料，不代替实际逆向实验。
 
+## 上下文交接
+
+切换模型、新开聊天或准备压缩上下文前，显式调用：
+
+```text
+$context-handoff 保存当前任务到 D:/project/handoff，包含背景、关键决定、完成情况、证据来源和下一步计划。
+```
+
+保存位置遵循当前工作区的输出限制；未指定时使用工作区约定的输出目录。每次生成新的 UTF-8 Markdown 文档，不覆盖已有文件。报告保留目标与验收标准、用户约束、关键决定、文件/提交/测试证据、未决问题、下一步计划及可复制的恢复提示词，不复制密钥和令牌。
+
+切换后指定实际文件路径继续：
+
+```text
+$context-handoff 读取 D:/project/handoff/实际交接文件.md，核对当前工作区状态后继续下一步。
+```
+
+仅要求查看文档时不会执行计划。恢复时先核对现状，不将旧计划视为新的操作授权。它只能总结当前可见或可核实的信息，不能找回已丢失的上下文，也不提供切换模型前自动保存的保证。
+
 ## 仓库结构
 
 ```text
@@ -85,8 +107,12 @@ Codex/
 │  │     ├─ SKILL.md
 │  │     ├─ agents/openai.yaml
 │  │     └─ references/config.json
-│  └─ reverse-engineering/
-│     └─ re-notes/
+│  ├─ reverse-engineering/
+│  │  └─ re-notes/
+│  │     ├─ SKILL.md
+│  │     └─ agents/openai.yaml
+│  └─ workflow/
+│     └─ context-handoff/
 │        ├─ SKILL.md
 │        └─ agents/openai.yaml
 └─ scripts/

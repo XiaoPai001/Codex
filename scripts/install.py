@@ -15,12 +15,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SOURCES = {
     "review-flow": REPO_ROOT / "skills" / "development" / "review-flow",
     "re-notes": REPO_ROOT / "skills" / "reverse-engineering" / "re-notes",
+    "context-handoff": REPO_ROOT / "skills" / "workflow" / "context-handoff",
 }
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="安装本仓库的 Codex 技能：独立代码审阅或逆向分析笔记整理。"
+        description="安装本仓库的 Codex 技能：独立代码审阅、逆向分析笔记整理或上下文交接。"
     )
     parser.add_argument("--skill", choices=SOURCES, default="review-flow", help="技能标识（默认：review-flow 独立代码审阅）")
     parser.add_argument("--model", help="审阅模型 ID，仅用于 review-flow")

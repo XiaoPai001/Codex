@@ -1,0 +1,4 @@
+interface:
+  display_name: "上下文交接"
+  short_description: "切换模型或聊天前保存任务背景、关键决定、当前进展和下一步计划"
+  default_prompt: "使用 $context-handoff 把当前任务的背景、关键决定、进展和下一步计划保存为新的 Markdown 交接文档，保留未决问题和证据来源，不覆盖已有文件。"

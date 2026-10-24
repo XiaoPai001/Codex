@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-安装独立代码审阅（review-flow）或逆向分析笔记整理（re-notes）技能。
+安装独立代码审阅（review-flow）、逆向分析笔记整理（re-notes）或上下文交接（context-handoff）技能。
 .PARAMETER Skill
 技能标识；默认 review-flow。仓库分类不影响本地安装目录名。
 .PARAMETER Model
@@ -14,7 +14,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('review-flow', 're-notes')]
+    [ValidateSet('review-flow', 're-notes', 'context-handoff')]
     [string]$Skill = 'review-flow',
     [string]$Model,
     [string]$Effort,
@@ -25,8 +25,13 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-# 开发类 / 逆向分析类：仓库分类路径与本地安装位置分开处理。
-$category = if ($Skill -eq 'review-flow') { 'development' } else { 'reverse-engineering' }
+# 开发类 / 逆向分析类 / 工作流类：分类路径不影响本地安装目录名。
+$categories = @{
+    'review-flow' = 'development'
+    're-notes' = 'reverse-engineering'
+    'context-handoff' = 'workflow'
+}
+$category = $categories[$Skill]
 $source = Join-Path $repoRoot "skills\$category\$Skill"
 $configPath = Join-Path $source "references\config.json"
 
