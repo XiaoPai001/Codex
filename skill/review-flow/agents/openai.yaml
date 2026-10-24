@@ -1,0 +1,7 @@
+interface:
+  display_name: "强模型代码审阅"
+  short_description: "用更强模型的子智能体审批代码"
+  default_prompt: "使用 $review-flow，让更强的模型审阅刚写完的流程，找出问题并给出修改方案。"
+
+policy:
+  allow_implicit_invocation: false
