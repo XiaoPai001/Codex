@@ -14,6 +14,7 @@
 | 逆向分析 | [xp-debug-diff：调试状态对比](skills/reverse-engineering/xp-debug-diff/SKILL.md) | 适配 DHS XDbg MCP，采集指定范围快照，离线对比寄存器与内存变化 |
 | 逆向分析 | [xp-save-analysis：存档格式分析](skills/reverse-engineering/xp-save-analysis/SKILL.md) | 对比存档样本、分析格式与数值线索，按需联动 IDA/调试器，保留不确定项 |
 | 工作流 | [xp-context-handoff：上下文交接](skills/workflow/xp-context-handoff/SKILL.md) | 切换模型或聊天前保存任务背景、决定、进展和下一步计划，读取交接文档接续工作 |
+| 工作流 | [xp-status：大白话进度](skills/workflow/xp-status/SKILL.md) | 在聊天中简短解释当前在做什么、做到哪了、还差什么和下一步，默认不保存文件 |
 
 ## 安装
 
@@ -23,6 +24,7 @@
 python scripts/install.py --skill xp-review-flow
 python scripts/install.py --skill xp-re-notes
 python scripts/install.py --skill xp-context-handoff
+python scripts/install.py --skill xp-status
 python scripts/install.py --skill xp-ida-struct
 python scripts/install.py --skill xp-debug-diff
 python scripts/install.py --skill xp-save-analysis
@@ -32,6 +34,7 @@ python scripts/install.py --skill xp-save-analysis
 ./scripts/install.ps1 -Skill xp-review-flow
 ./scripts/install.ps1 -Skill xp-re-notes
 ./scripts/install.ps1 -Skill xp-context-handoff
+./scripts/install.ps1 -Skill xp-status
 ./scripts/install.ps1 -Skill xp-ida-struct
 ./scripts/install.ps1 -Skill xp-debug-diff
 ./scripts/install.ps1 -Skill xp-save-analysis
@@ -56,6 +59,7 @@ python scripts/install.py --skill xp-re-notes --dest .agents/skills/xp-re-notes
 - `skills/development/xp-review-flow`
 - `skills/reverse-engineering/xp-re-notes`
 - `skills/workflow/xp-context-handoff`
+- `skills/workflow/xp-status`
 - `skills/reverse-engineering/xp-ida-struct`
 - `skills/reverse-engineering/xp-debug-diff`
 - `skills/reverse-engineering/xp-save-analysis`
@@ -132,6 +136,23 @@ $xp-context-handoff 读取 D:/project/handoff/实际交接文件.md，核对当�
 
 仅要求查看文档时不会执行计划。恢复时先核对现状，不将旧计划视为新的操作授权。它只能总结当前可见或可核实的信息，不能找回已丢失的上下文，也不提供切换模型前自动保存的保证。
 
+## 大白话进度
+
+```text
+$xp-status 用大白话说说我们现在在干什么、做到哪了。
+$xp-status 别讲太多技术细节，告诉我做完了什么，还差什么。
+$xp-status 只说这次存档分析的进度，哪些确定了、哪些还没验证。
+```
+
+中文显示名称为 **XP · 大白话进度**，由当前主模型执行。默认直接在聊天中简短解释目标、当前进展、未完成事项和实际下一步，不自动保存文档、重新测试或操作仓库。它会区分计划、完成、测试通过和已上传，不把离线测试通过说成真实目标已验证，也不会编造完成百分比或待办。
+
+它与上下文交接分工如下：
+
+| 技能 | 适用需求 | 默认输出 |
+|---|---|---|
+| `xp-status` | 给用户快速讲清楚现在的情况 | 聊天内的大白话说明 |
+| `xp-context-handoff` | 让切换后的模型能继续工作 | 包含背景、约束、证据与计划的新 MD 文档 |
+
 ## 仓库结构
 
 ```text
@@ -149,7 +170,10 @@ Codex/
 │  │  ├─ xp-debug-diff/
 │  │  └─ xp-save-analysis/
 │  └─ workflow/
-│     └─ xp-context-handoff/
+│     ├─ xp-context-handoff/
+│     │  ├─ SKILL.md
+│     │  └─ agents/openai.yaml
+│     └─ xp-status/
 │        ├─ SKILL.md
 │        └─ agents/openai.yaml
 └─ scripts/

@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · 大白话进度"
+  short_description: "用大白话说明当前任务在做什么、做到哪一步、还差什么以及接下来做什么"
+  default_prompt: "使用 $xp-status 用大白话总结当前上下文：我们在做什么、做到哪了、还有什么没完成，以及下一步做什么；直接在聊天里说。"
