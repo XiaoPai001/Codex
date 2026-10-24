@@ -1,131 +1,97 @@
-# review-flow
+# Codex 技能合集
 
-`review-flow` 是一个 Codex skill。它让一个独立的强推理子智能体审阅刚完成
-的代码或业务流程，检查缺陷、边界情况、回归风险和测试缺口，返回审批结论
-与修改方案。
+按用途分类维护的 Codex 技能。仓库中的分类目录用于浏览，安装后每个技能仍是独立文件夹。
 
-它不会修改代码。它的模型和推理强度独立于当前负责写代码的模型。
+## 技能目录
+
+| 分类 | 技能 | 功能 |
+|---|---|---|
+| 开发 | [review-flow：独立代码审阅](skills/development/review-flow/SKILL.md) | 启动独立审阅子智能体，检查缺陷、回归风险和测试缺口，提供结论与整改方案 |
+| 逆向分析 | [re-notes：逆向分析笔记整理](skills/reverse-engineering/re-notes/SKILL.md) | 总结本地 MD、整理数据结构、生成交接摘要，保留来源与不确定项，另存结果 |
 
 ## 安装
 
-要求：支持自定义子智能体的 Codex 客户端。安装器需要 Python 3；
-Windows 也可以直接用 PowerShell 安装脚本。
-
-### 任意平台（推荐）
-
-克隆仓库后，在仓库根目录运行：
+克隆本仓库后在仓库根目录执行。Python 安装器需要 Python 3；Windows 的 PowerShell 安装器可独立使用。
 
 ```sh
-python3 install.py
+python scripts/install.py --skill review-flow
+python scripts/install.py --skill re-notes
 ```
-
-Windows 上通常是 `python install.py`。
-
-### Windows PowerShell
 
 ```powershell
-./install.ps1
+./scripts/install.ps1 -Skill review-flow
+./scripts/install.ps1 -Skill re-notes
 ```
 
-两个安装器行为一致。
+不指定技能时默认安装 `review-flow`。默认安装位置是 `~/.agents/skills/<技能名>`，跨仓库使用。安装后在下一轮对话调用；若列表未刷新，可新开聊天。
 
-默认安装到用户级目录 `~/.agents/skills/review-flow`，对任何仓库都生效。
-Codex 同时会扫描 `$CODEX_HOME/skills`（默认 `~/.codex/skills`）。想让审阅能力
-跨仓库生效，装到这两处之一即可；想只给某个仓库用，就装到该仓库的
-`.agents/skills`。
-也可以安装到某个仓库的 `.agents/skills/review-flow`，让团队随仓库共享：
-
-```powershell
-./install.ps1 -Destination .agents/skills/review-flow
-```
+指定安装位置时，目标目录名必须与技能名一致。例如安装到 `$CODEX_HOME/skills` 下或项目的 `.agents/skills` 下：
 
 ```sh
-python3 install.py --dest .agents/skills/review-flow
+python scripts/install.py --skill re-notes --dest .agents/skills/re-notes
 ```
 
-如果目标已存在，需要显式加 `-Force` 或 `--force`。两个安装器都只接受
-名为 `review-flow` 的目标目录，不会替换其他目录。
+```powershell
+./scripts/install.ps1 -Skill re-notes -Destination .agents/skills/re-notes
+```
 
-## 修改模型 ID
+已有目标默认拒绝覆盖。确需替换安装时加 `--force` / `-Force`，这会删除并替换对应技能目录，包括本地配置；请先保留需要的修改。
 
-模型配置唯一存放在：
+也可请 Codex 的 skill-installer 从本仓库安装，提供相应路径：
+
+- `skills/development/review-flow`
+- `skills/reverse-engineering/re-notes`
+
+## 独立代码审阅
 
 ```text
-skill/review-flow/references/config.json
+$review-flow 审阅刚写的上传流程，检查失败重试和并发写入，不要改代码。
 ```
 
-也可以在安装时覆盖：
+支持指定文件、模块、提交、分支对比或业务流程；未指定范围时审阅当前未提交改动。返回 `BLOCK`、`APPROVE_WITH_COMMENTS` 或 `APPROVE`，问题包含严重程度、文件行号、触发条件和最小修法。
 
-```powershell
-./install.ps1 -Model "cn:mimo-v2.6-pro" -Effort "high"
-```
+模型配置：[references/config.json](skills/development/review-flow/references/config.json)，默认 `gpt-6.1-sol`、`xhigh`。模型 ID 与推理档位需由使用者的环境支持；不可用时停止并报错，不静默回退。
+
+安装时可覆盖配置（仅适用于 review-flow）：
 
 ```sh
-python3 install.py --model "cn:mimo-v2.6-pro" --effort "high"
+python scripts/install.py --skill review-flow --model gpt-6.1-sol --effort xhigh
 ```
 
-仓库里的默认值是 `ccs-qoder-2/qmodel_38max`，它来自维护这台机器时的模型目录。
-换到另一台电脑时先确认该 ID 在本机可用，不可用就按上面的方式改成本机的
-强模型 ID。
+```powershell
+./scripts/install.ps1 -Skill review-flow -Model gpt-6.1-sol -Effort xhigh
+```
 
-安装后修改已安装副本的 `references/config.json` 即可，不需要重启 Codex。
-模型 ID 必须与当前环境的模型目录中的 `slug` 完全一致；推理强度必须是该
-模型实际支持的档位。模型不可用时，skill 会停止并报错，不会静默降级成
-父智能体的模型。
+此技能需要支持指定子智能体模型和推理强度的客户端。只读审阅是指令约束；子智能体继承父会话的 provider 和权限。审阅结论不等于 CI 强制门禁。
 
-## 使用
-
-在 Codex 中显式调用：
+## 逆向分析笔记整理
 
 ```text
-$review-flow 审阅刚写的上传流程，重点检查失败重试和并发写入。不要改代码。
+$re-notes 总结 D:/analysis/game-notes 里的 MD，列出进度和待验证清单。
+$re-notes 整理 D:/analysis/save.md 中的存档数据结构，保留字段来源和未知项。
+$re-notes 给 D:/analysis/game-notes 生成交接摘要，方便下次继续分析。
 ```
 
-审阅范围可以是未提交改动、指定文件或模块、某个提交、分支对比，或整条
-业务流程。没有指定范围时，默认审阅当前未提交的改动。
-
-返回格式：
-
-- `BLOCK`：存在必须先修的问题
-- `APPROVE_WITH_COMMENTS`：修复建议不阻塞，但建议处理
-- `APPROVE`：未发现可执行缺陷
-
-每条问题包含严重级别、`文件:行号`、出错原因、触发场景和最小修法。
-
-## 它与内置 Review Agent 的区别
-
-Codex 自带的 `review-agent` 会在当前会话里直接审阅，使用的是当前会话模型。
-`review-flow` 会启动单独的审阅子智能体，并使用配置中的模型，因此适合
-“弱模型干活、强模型审批”的流程。
-
-## 边界
-
-- 审阅是技术结论，不是不可绕过的安全门禁。需要强制拦截时，再把测试或
-  审阅接入 CI / Git hook。
-- 子智能体继承父会话的 provider、沙箱、审批策略、MCP 和权限。这里切换
-  的是模型与推理强度，不能单独切换到另一套 provider。
-- “不修改文件”是指令约束。需要严格只读时，应在父会话使用只读权限。
-- 自定义子智能体需要当前 Codex 版本支持；技能框架本身不等于多智能体能力。
-
-各平台的 skill 路径与子智能体行为以 OpenAI 官方文档为准：
-
-- [Build skills](https://developers.openai.com/codex/skills/)
-- [Subagents](https://developers.openai.com/codex/subagents/)
+保留来源文件、行号或章节、游戏版本和地址基准；区分有验证记录、推测、待验证与冲突。不同版本和磁盘/内存布局分别整理，不自行补造字段。不覆盖原始笔记或已有报告，新报告遵循当前工作区的输出目录约定。此技能整理已有资料，不代替实际逆向实验。
 
 ## 仓库结构
 
 ```text
-.
-|-- README.md
-|-- .gitattributes
-|-- .gitignore
-|-- install.py
-|-- install.ps1
-`-- skill/
-    `-- review-flow/
-        |-- SKILL.md
-        |-- agents/
-        |   `-- openai.yaml
-        `-- references/
-            `-- config.json
+Codex/
+├─ README.md
+├─ skills/
+│  ├─ development/
+│  │  └─ review-flow/
+│  │     ├─ SKILL.md
+│  │     ├─ agents/openai.yaml
+│  │     └─ references/config.json
+│  └─ reverse-engineering/
+│     └─ re-notes/
+│        ├─ SKILL.md
+│        └─ agents/openai.yaml
+└─ scripts/
+   ├─ install.py
+   └─ install.ps1
 ```
+
+原来的 `skill/review-flow` 已迁移到 `skills/development/review-flow`，根目录安装脚本已迁移至 `scripts/`，请使用本文的新路径。

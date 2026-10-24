@@ -1,6 +1,6 @@
 interface:
-  display_name: "强模型代码审阅"
-  short_description: "用更强模型的子智能体审批代码"
+  display_name: "独立代码审阅"
+  short_description: "启动独立审阅子智能体，检查代码缺陷、行为回归和测试缺口并提供整改建议"
   default_prompt: "使用 $review-flow，让更强的模型审阅刚写完的流程，找出问题并给出修改方案。"
 
 policy:
