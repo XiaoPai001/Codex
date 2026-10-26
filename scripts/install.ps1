@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-安装本仓库的 XP 技能：代码审阅、逆向分析、笔记整理、上下文交接与大白话进度。
+安装本仓库的 XP 技能：代码审阅、逆向分析、笔记整理、上下文交接、进度说明与子智能体接续。
 .PARAMETER Skill
 技能标识；默认 xp-review-flow。仓库分类不影响本地安装目录名。
 .PARAMETER Model
@@ -14,7 +14,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('xp-review-flow', 'xp-re-notes', 'xp-context-handoff', 'xp-status', 'xp-ida-struct', 'xp-debug-diff', 'xp-save-analysis')]
+    [ValidateSet('xp-review-flow', 'xp-re-notes', 'xp-context-handoff', 'xp-status', 'xp-delegate', 'xp-ida-struct', 'xp-debug-diff', 'xp-save-analysis')]
     [string]$Skill = 'xp-review-flow',
     [string]$Model,
     [string]$Effort,
@@ -31,6 +31,7 @@ $categories = @{
     'xp-re-notes' = 'reverse-engineering'
     'xp-context-handoff' = 'workflow'
     'xp-status' = 'workflow'
+    'xp-delegate' = 'workflow'
     'xp-ida-struct' = 'reverse-engineering'
     'xp-debug-diff' = 'reverse-engineering'
     'xp-save-analysis' = 'reverse-engineering'

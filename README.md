@@ -15,6 +15,7 @@
 | 逆向分析 | [xp-save-analysis：存档格式分析](skills/reverse-engineering/xp-save-analysis/SKILL.md) | 对比存档样本、分析格式与数值线索，按需联动 IDA/调试器，保留不确定项 |
 | 工作流 | [xp-context-handoff：上下文交接](skills/workflow/xp-context-handoff/SKILL.md) | 切换模型或聊天前保存任务背景、决定、进展和下一步计划，读取交接文档接续工作 |
 | 工作流 | [xp-status：大白话进度](skills/workflow/xp-status/SKILL.md) | 在聊天中简短解释当前在做什么、做到哪了、还差什么和下一步，默认不保存文件 |
+| 工作流 | [xp-delegate：子智能体接续](skills/workflow/xp-delegate/SKILL.md) | 将当前任务交给一个子智能体继续，默认沿用主模型，也可配置/指定模型，完成后由主聊天汇报 |
 
 ## 安装
 
@@ -25,6 +26,7 @@ python scripts/install.py --skill xp-review-flow
 python scripts/install.py --skill xp-re-notes
 python scripts/install.py --skill xp-context-handoff
 python scripts/install.py --skill xp-status
+python scripts/install.py --skill xp-delegate
 python scripts/install.py --skill xp-ida-struct
 python scripts/install.py --skill xp-debug-diff
 python scripts/install.py --skill xp-save-analysis
@@ -35,6 +37,7 @@ python scripts/install.py --skill xp-save-analysis
 ./scripts/install.ps1 -Skill xp-re-notes
 ./scripts/install.ps1 -Skill xp-context-handoff
 ./scripts/install.ps1 -Skill xp-status
+./scripts/install.ps1 -Skill xp-delegate
 ./scripts/install.ps1 -Skill xp-ida-struct
 ./scripts/install.ps1 -Skill xp-debug-diff
 ./scripts/install.ps1 -Skill xp-save-analysis
@@ -60,6 +63,7 @@ python scripts/install.py --skill xp-re-notes --dest .agents/skills/xp-re-notes
 - `skills/reverse-engineering/xp-re-notes`
 - `skills/workflow/xp-context-handoff`
 - `skills/workflow/xp-status`
+- `skills/workflow/xp-delegate`
 - `skills/reverse-engineering/xp-ida-struct`
 - `skills/reverse-engineering/xp-debug-diff`
 - `skills/reverse-engineering/xp-save-analysis`
@@ -153,6 +157,32 @@ $xp-status 只说这次存档分析的进度，哪些确定了、哪些还没验
 | `xp-status` | 给用户快速讲清楚现在的情况 | 聊天内的大白话说明 |
 | `xp-context-handoff` | 让切换后的模型能继续工作 | 包含背景、约束、证据与计划的新 MD 文档 |
 
+## 子智能体接续
+
+中文显示名称为 **XP · 子智能体接续**。它把当前目标、已完成事项、最新约束、关键文件和验收条件交给一个子智能体，由它接着执行，完成后在发起调用的主聊天汇报。不会另建普通聊天，也不会要求用户切到子窗口查结果。
+
+```text
+$xp-delegate 接着当前任务做，沿用当前模型，完成后在这里汇报。
+$xp-delegate 用 gpt-6.1-sol、xhigh 继续当前未完成任务，做完回主聊天汇报。
+```
+
+每次读取技能目录中的 [references/config.json](skills/workflow/xp-delegate/references/config.json)，默认值是：
+
+```json
+{
+  "model": "inherit",
+  "reasoning_effort": "inherit"
+}
+```
+
+`inherit` 动态跟随调用时主聊天选择的模型和推理设置，不锁定安装时的模型。两个字段分别按 **本次明确指定 > 用户维护的技能配置 > inherit 所指的主设置** 解析。例如，配置为 `gpt-6.1-sol` / `xhigh` 时今后默认指定它们；某次明确说“沿用当前”又可覆盖固定配置。指定值须由宿主实际支持，不可用时报告错误，不静默换模型。只影响执行子智能体，不修改主模型或全局设置。
+
+附带的 `scripts/resolve_request.py` 负责验证配置和解析优先级，不负责启动子智能体，也不代替模型可用性检查。安装器的 `--model` / `-Model` 与 `--effort` / `-Effort` 仍仅用于 `xp-review-flow`；`xp-delegate` 请修改自己的配置或在本次调用中指定。
+
+包含 [Codex 适配](skills/workflow/xp-delegate/references/codex.md)与 [Claude Code 适配](skills/workflow/xp-delegate/references/claude-code.md)。Codex 已实际测试默认继承及回传，父子本地运行日志均为 `gpt-6.1-sol` / `high`，该值是当时环境的观察结果，不是固定默认值；指定其他模型的实际启动及 Claude Code 路径尚未实测。Claude Code 安装目录为 `~/.claude/skills/xp-delegate`，调用示例为 `/xp-delegate`，宿主工具及模型限制仍需核对。
+
+需要宿主提供可用的子智能体工具；安装技能不会自动配置模型、切换提供商或增加权限。历史继承不能保证每个细节都传达，关键决定仍放入明确简报；未完成任务、启动错误和验收缺口会如实回报。
+
 ## 仓库结构
 
 ```text
@@ -173,9 +203,17 @@ Codex/
 │     ├─ xp-context-handoff/
 │     │  ├─ SKILL.md
 │     │  └─ agents/openai.yaml
-│     └─ xp-status/
+│     ├─ xp-status/
+│     │  ├─ SKILL.md
+│     │  └─ agents/openai.yaml
+│     └─ xp-delegate/
 │        ├─ SKILL.md
-│        └─ agents/openai.yaml
+│        ├─ agents/openai.yaml
+│        ├─ references/
+│        │  ├─ config.json
+│        │  ├─ codex.md
+│        │  └─ claude-code.md
+│        └─ scripts/resolve_request.py
 └─ scripts/
    ├─ install.py
    └─ install.ps1

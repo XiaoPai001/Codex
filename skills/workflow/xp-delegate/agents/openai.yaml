@@ -1,0 +1,4 @@
+interface:
+  display_name: "XP · 子智能体接续"
+  short_description: "将当前任务和关键上下文交给一个子智能体，默认沿用主模型，完成后回主聊天汇报"
+  default_prompt: "使用 $xp-delegate 让一个子智能体接着当前任务执行，默认沿用当前主模型和推理设置，完成后回到主聊天汇报结果、验证与剩余问题。"
